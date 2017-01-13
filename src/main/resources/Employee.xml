@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Employee">
+
+  <!-- Use type aliases to avoid typing the full classname every time. -->
+  <typeAlias alias="Employee" type="com.example.ibatis.Employee"/>
+
+  <!-- Result maps describe the mapping between the columns returned
+       from a query, and the class properties.  A result map isn't
+       necessary if the columns (or aliases) match to the properties
+       exactly. -->
+  <resultMap id="EmployeeResult" class="Employee">
+    <result property="emp_no" column="emp_no"/>
+    <result property="firstName" column="first_name"/>
+    <result property="lastName" column="last_name"/>
+  </resultMap>
+
+  <!-- Select with no parameters using the result map for Employee class. -->
+  <select id="selectAllEmployees" resultMap="EmployeeResult">
+    select * from employees
+  </select>
+
+  <!-- A simpler select example without the result map.  Note the
+       aliases to match the properties of the target result class. -->
+  <select id="selectEmployeeById" parameterClass="int" resultClass="Employee">
+    select
+      emp_no as emp_no,
+      first_name as firstName,
+      last_name as lastName
+    from employees
+    where emp_no = #emp_no#
+  </select>
+
+  <!-- Insert example, using the Employee parameter class -->
+  <insert id="insertEmployee" parameterClass="Employee">
+    insert into employees (
+      emp_no,
+      first_name,
+      last_name
+    values (
+      #emp_no#, #firstName#, #lastName#
+    )
+  </insert>
+
+  <!-- Update example, using the Employee parameter class -->
+  <update id="updateEmployee" parameterClass="Employee">
+    update employees set
+      first_name = #firstName#,
+      last_name = #lastName#
+    where
+      emp_no = #emp_no#
+  </update>
+
+  <!-- Delete example, using an integer as the parameter class -->
+  <delete id="deleteEmployeeById" parameterClass="int">
+    delete from employees where emp_no = #emp_no#
+  </delete>
+
+</sqlMap>
